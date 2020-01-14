@@ -1,0 +1,49 @@
+{
+  "name": "pensum",
+  "version": "1.0.0",
+  "description": "Extract load-test scenarios from historical website visitor data",
+  "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.13.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^3.1.0",
+    "k6": "0.0.0",
+    "mocha": "^6.0.2",
+    "nyc": "^14.1.1"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "@istanbuljs/nyc-config-babel": "^2.1.1",
+    "babel-plugin-istanbul": "^5.1.4",
+    "chance": "^1.0.18",
+    "del": "^4.1.1",
+    "googleapis": "^37.2.0",
+    "graphlib": "^2.1.7",
+    "graphlib-dot": "^0.6.2",
+    "libxmljs": "^0.19.5",
+    "minimist": "^1.2.0",
+    "mocha-helpers": "^3.2.0",
+    "xml-writer": "^1.7.0",
+    "xml2js": "^0.4.19",
+    "xmlhttprequest": "^1.8.0",
+    "xstate": "^3.3.3"
+  },
+  "scripts": {
+    "build": "babel ./src -d ./dist --source-maps",
+    "test": "eslint ./** && nyc mocha ./test/*test.js --require @babel/register",
+    "run-export": "babel-node ./src/index.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  }
+}

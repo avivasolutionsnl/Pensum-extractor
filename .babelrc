@@ -1,0 +1,19 @@
+{
+  "env": {
+    "development": {
+      "sourceMaps": true,
+      "retainLines": true
+    }
+  },
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "10"
+        }
+      }
+    ]
+  ],
+  "plugins": ["istanbul"]
+}
