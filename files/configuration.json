@@ -1,0 +1,26 @@
+{
+  "analytics": {
+    "private_key": "",
+    "client_email": "",
+    "view_id": "",
+    "start_date": "",
+    "end_date": "",
+    "dimensions": {
+      "userID": "",
+      "loggedIn": "",
+      "date": ""
+    }
+  },
+  "sitemap": {
+    "productURL": "",
+    "categoriesURL": ""
+  },
+  "exportOptions": {
+    "xml": true,
+    "writeVisitGraphs": false,
+    "writeScenarioGraphs": false,
+    "useSitemap": true,
+    "thinkTimesPerPage": true,
+    "removeOutliers": true
+  }
+}
