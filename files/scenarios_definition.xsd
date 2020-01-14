@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="scenarios">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="scenario">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="states">
+                                <xs:complexType>
+                                    <xs:choice maxOccurs="unbounded">
+                                        <xs:element name="state">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:choice minOccurs ="0" maxOccurs="unbounded">
+                                                        <xs:element name="events">
+                                                            <xs:complexType>
+                                                                <xs:choice minOccurs ="0" maxOccurs="unbounded">
+                                                                    <xs:element name="event">
+                                                                        <xs:complexType>
+                                                                            <xs:attribute name="name" type="xs:string"/>
+                                                                            <xs:attribute name="probability" type="xs:string"/>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                </xs:choice>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                    </xs:choice>
+                                                    <xs:element name="targets">
+                                                        <xs:complexType>
+                                                            <xs:choice minOccurs ="0" maxOccurs="unbounded">
+                                                                <xs:element name="target">
+                                                                    <xs:complexType>
+                                                                        <xs:attribute name="name" type="xs:string"/>
+                                                                        <xs:attribute name="probability" type="xs:string"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:choice>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                                <xs:attribute name="path" type="xs:string"/>
+                                                <xs:attribute name="event" type="xs:string"/>
+                                                <xs:attribute name="avgThinkTime" type="xs:string"/>
+                                                <xs:attribute name="stdThinkTime" type="xs:string"/>
+                                                <xs:attribute name="minThinkTime" type="xs:string"/>
+                                                <xs:attribute name="maxThinkTime" type="xs:string"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:choice>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="scenarioName" type="xs:string"/>
+                        <xs:attribute name="nrOfUsers" type="xs:string"/>
+                        <xs:attribute name="probability" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
