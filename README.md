@@ -67,9 +67,9 @@ Export settings:
 ```
 
 ### Arguments
-- data option: provided with --data, current options: 'ga-custom (with custom dimensions), ga'
-- generate option: provided with --generate, current options: 'exact (only for ga)', 'probability'
-- configuration option: provided with --configuration, this is used to pass a configuration file. Currently this path is relative from `./extractor/src/index.js`
+- data option: provided with `--data`, current options: 'ga-custom (with custom dimensions), ga'
+- generate option: provided with `--generate`, current options: 'exact (only for ga)', 'probability'
+- configuration option: provided with `--configuration`, this is used to pass a configuration file. Currently this path is relative from `./extractor/src/index.js`
 
 ## Code quality.
 Code quality is ensured with eslint in this project.
