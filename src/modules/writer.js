@@ -104,9 +104,9 @@ export function writeScenarioGraph (scenarios, folderLocation = './extractor/fil
  * @export
  * @param { Scenario[] } scenarios the scenarios.
  * @param {string} [xmlDefinitionfile='./extractor/files/scenarios_definition.xsd'] The location of the xsd file.
- * @param {string} [file='./mercury-scripts/scenarios.xml'] the file the xml is saved to.
+ * @param {string} [file='./scenarios.xml'] the file the xml is saved to.
  */
-export function writeScenariosXML (scenarios, xmlDefinitionfile = './extractor/files/scenarios_definition.xsd', file = './mercury-scripts/scenarios.xml') {
+export function writeScenariosXML (scenarios, xmlDefinitionfile = './extractor/files/scenarios_definition.xsd', file = './scenarios.xml') {
     // create xml
     var xw = new XMLWriter(true);
     xw.startDocument();
@@ -196,9 +196,9 @@ function writeScenarioTarget (xw, target) {
  *
  * @export
  * @param { Scenario[] } scenarios the scenarios array.
- * @param {string} [file='./mercury-scripts/src/scenarios.json'] the file that the scenarios are saved to.
+ * @param {string} [file='./scenarios.json'] the file that the scenarios are saved to.
  */
-export function writeScenariosJSON (scenarios, file = './mercury-scripts/src/scenarios.json') {
+export function writeScenariosJSON (scenarios, file = './scenarios.json') {
     // stringify JSON Object
     var jsonContent = JSON.stringify(scenarios, null, 4);
     fs.writeFileSync(file, jsonContent, 'utf8');

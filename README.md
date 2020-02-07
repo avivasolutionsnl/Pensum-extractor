@@ -1,14 +1,14 @@
 # Extractor
-The extractor is used for getting the workload model out of the historical data. The current implementation is with Google Analytics data.
+The extractor is used for getting the workload model out of the historical data. The current implementation uses Google Analytics data.
 
 ## Generation of test scenarios
-Run npm run run-export with arguments
+Run `run-export` with arguments, e.g:
 
-`npm run run-export -- --data ga-custom --generate exact --configuration /mercury-scripts/mercury-extractor-configuration.json`
-
-`npm run run-export -- --data ga-custom --generate probability --configuration /mercury-scripts/mercury-extractor-configuration.json`
-
-`npm run run-export -- --data ga --configuration /mercury-scripts/mercury-extractor-configuration.json`
+```
+> npm run run-export -- --data ga-custom --generate exact --configuration extractor-configuration.json
+> npm run run-export -- --data ga-custom --generate probability --configuration extractor-configuration.json
+> npm run run-export -- --data ga --configuration extractor-configuration.json
+```
 
 This will create the JSON file and optional a XML file. The JSON file is used to run K6 with, while the XML file can be used to look into the scenarios.
 

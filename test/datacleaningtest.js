@@ -62,7 +62,7 @@ describe('Data cleaning', function () {
         });
 
         var element2 = {
-            dimensions: ['2', '1553847449714', '1', '/http://mercury-dev-v2.westeurope.cloudapp.azure.com/search?location=searchtext=test'],
+            dimensions: ['2', '1553847449714', '1', '/http://localhost/search?location=searchtext=test'],
             metrics: [{
                 values: ['1', '3', '1', '0', '1', '1', '0']
             }]
@@ -127,7 +127,7 @@ describe('Data cleaning', function () {
         });
 
         var element2 = {
-            dimensions: ['/http://mercury-dev-v2.westeurope.cloudapp.azure.com/search?location=searchtext=test', '/'],
+            dimensions: ['/http://localhost/search?location=searchtext=test', '/'],
             metrics: [{
                 values: ['2', '24', '0', '1', '0', '0', '0']
             }]
