@@ -47,8 +47,8 @@ Sitemaps can also be set in the config file.
 
 Export settings:
 - xml option: writes the scenarios to a xml file.
-- write visit graphs option: writes visit graphs showing the visits of a session in DOT language. The visits graphs are written to ./extractor/files/graphs
-- write scenario graphs option: writes scenario graphs showing the scenarios in DOT language. The scenario graphs are written to ./extractor/files/graphs
+- write visit graphs option: writes visit graphs showing the visits of a session in DOT language. The visits graphs are written to `./extractor/files/graphs`
+- write scenario graphs option: writes scenario graphs showing the scenarios in DOT language. The scenario graphs are written to `./extractor/files/graphs`
 - use sitemap option: specifies if the sitemap must be used for making products and categories generic.
 - think times per page option: specifies if the thinktimes must be calculated with the distribution per page instead of per state.
     - Per page calculating collects the thinktime distribution of each page, when a page occurs in a state the thinktime distribution of that specific page is used.
@@ -69,21 +69,27 @@ Export settings:
 ### Arguments
 - data option: provided with --data, current options: 'ga-custom (with custom dimensions), ga'
 - generate option: provided with --generate, current options: 'exact (only for ga)', 'probability'
-- configuration option: provided with --configuration, this is used to pass a configuration file. Currently this path is relative from ./extractor/src/index.js
+- configuration option: provided with --configuration, this is used to pass a configuration file. Currently this path is relative from `./extractor/src/index.js`
 
 ## Code quality.
 Code quality is ensured with eslint in this project.
 
-The following command can be executed with a file.
-`npx eslint *file*`
+The following command can be executed with a file:
+```
+> npx eslint *file*
+```
 
 Or install the visual studio code plugin for eslint to ensure code quality.
 
 ## Tests
 Testing is done with Mocha in this project.
 
-The following command executes all the tests.
-`npm test`
+The following command executes all the tests:
+```
+> npm test
+```
 
 When testing a specific file the following command can be used.
-`npx mocha --require @babel/register *file*`
+```
+> npx mocha --require @babel/register *file*
+```
