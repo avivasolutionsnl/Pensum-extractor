@@ -19,12 +19,12 @@ getScenarios(args.data, args.generate, 1, args.configuration);
  * @param { Number } threshold threshold number that indicates at what percentage the scenario or scenariostate target needs to occur.
  * @param { Object } customConfiguration custom configuration that is used for export and/or google analytics settings.
  */
-function getScenarios (dataOption, generateOption, threshold, customConfiguration) {
+function getScenarios (dataOption = 'ga', generateOption = 'probability', threshold, customConfiguration) {
     console.log('Data: ' + dataOption + ', Generate: ' + generateOption);
 
     var configuration = require('../files/configuration.json');
     if (customConfiguration) {
-        configuration = require(process.cwd() + customConfiguration);
+        configuration = require(`${customConfiguration}`);
     }
 
     if (!configuration) {
@@ -33,6 +33,7 @@ function getScenarios (dataOption, generateOption, threshold, customConfiguratio
 
     var scenarios;
     if (dataOption === 'ga-custom') {
+        // User visits
         exportDataGaCustom(configuration).then(visits => {
             var thinkTimes = null;
             // Calculates the think times per page instead of per state.
@@ -57,6 +58,7 @@ function getScenarios (dataOption, generateOption, threshold, customConfiguratio
             writeScenariosJSON(scenarios);
         });
     } else if (dataOption === 'ga') {
+        // Page visits
         exportDataGa(configuration).then(visits => {
             var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);
             scenarios = createScenariosProbability(visits, thinkTimes, threshold);
