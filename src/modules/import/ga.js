@@ -5,16 +5,21 @@ import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics'
 const entranceValue = '(entrance)';
 
 /**
- * Gets all the visits, the custom getReport() and convertToPageVisit() are passed.
+ * Gets all the visits
  *
  * @export
  * @param { Object } configuration the configuration that is used for Google Analytics.
  * @param { Function } toGenericPagePath
+ * @param { Array } GA data elements
  * @returns { PageVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function importVisits (configuration, toGenericPagePath) {
-    return importData(configuration, getReport, (e) => convertToPageVisit(e, toGenericPagePath));
+export async function importVisits (configuration, toGenericPagePath, data = null) {
+    if (!data) {
+        data = await importData(configuration, getReport);
+    }
+
+    return data.map(e => convertToPageVisit(e, toGenericPagePath));
 }
 
 /**
@@ -31,6 +36,9 @@ export function convertToPageVisit (element, toGenericPagePath = (p) => p) {
     // Get all the metrics out of the element.
     let [occurences, thinkTime, entrances, exit, addsToCart, removesFromCart, transactions] = element.metrics[0].values;
 
+    // Total occurences is minus number of exits
+    occurences -= exit; // TODO: verify if this is correct
+
     // cleaning
     pagePath = toGenericPagePath(cleanPagePath(pagePath));
     previousPagePath = toGenericPagePath(cleanPagePath(previousPagePath));
@@ -43,9 +51,6 @@ export function convertToPageVisit (element, toGenericPagePath = (p) => p) {
 
     // Make the thinktime average of the specific page
     thinkTime = Math.round(thinkTime / occurences);
-
-    // Total occurences is minus number of exits
-    occurences -= exit;
 
     return new PageVisit(new Visit(pagePath, ~~thinkTime, events), previousPagePath, ~~entrances, ~~exit, ~~occurences);
 }
@@ -79,8 +84,7 @@ function getReport (analyticsreporting, configuration, pageToken = 0) {
                 ],
                 dimensions: [
                     { name: 'ga:pagepath' },
-                    { name: 'ga:previousPagePath' },
-                    { name: configuration.dimensions.userID }
+                    { name: 'ga:previousPagePath' }
                 ],
                 pageToken: pageToken.toString()
             } ]

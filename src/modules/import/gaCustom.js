@@ -3,17 +3,21 @@ import { Visit } from '../../models/visit';
 import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 /**
- * Gets all the visits, the custom getReport() and convertToUserVisit() are passed.
+ * Gets all the visits
  *
  * @export
  * @param { Object } configuration
  * @param { Function } toGenericPagePath
+ * @param { Array } GA data elements
  * @returns { UserVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function importVisits (configuration, toGenericPagePath) {
-    var visits = await importData(configuration, getReport, (e) => convertToUserVisit(e, toGenericPagePath));
-    return visits;
+export async function importVisits (configuration, toGenericPagePath, data = null) {
+    if (!data) {
+        data = await importData(configuration, getReport);
+    }
+
+    return data.map(e => convertToUserVisit(e, toGenericPagePath));
 }
 
 /**
@@ -75,11 +79,11 @@ function getReport (analyticsreporting, configuration, pageToken = 0) {
                     { expression: 'ga:transactions' }
                 ],
                 dimensions: [
-                    { name: 'ga:pagepath' },
-                    { name: 'ga:previousPagePath' },
                     { name: configuration.dimensions.userID },
                     { name: configuration.dimensions.date },
-                    { name: 'ga:sessionCount' }
+                    { name: 'ga:sessionCount' },
+                    { name: 'ga:pagepath' },
+                    { name: 'ga:previousPagePath' }
                 ],
                 orderBys: [
                     { fieldName: configuration.dimensions.userID },

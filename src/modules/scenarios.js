@@ -3,7 +3,7 @@ import { createScenariosProbability } from './scenario/scenarioprobability';
 import { createVisitPaths } from './visitpath';
 import { importVisits as importCustomVisits } from './import/gaCustom';
 import { importVisits } from './import/ga';
-import { writeScenariosXML, writeScenariosJSON, writeVisitPathGraph, writeScenarioGraph } from './writer';
+import { writeScenariosXML, writeScenariosJSON, writeVisitPathGraph, writeScenarioGraphs } from './writer';
 import { getThinkTimesForEachPage } from './statistics';
 
 /**
@@ -13,11 +13,12 @@ import { getThinkTimesForEachPage } from './statistics';
  * @param { String } generateOption option for generating the scenarios. (exact, probability)
  * @param { Number } threshold threshold number that indicates at what percentage the scenario or scenariostate target needs to occur.
  * @param { Object } customConfiguration custom configuration that is used for export and/or google analytics settings.
+ * @param { Function } toGenericPagePath combine multiple page paths into one or more generic paths
  */
 export async function getScenarios (dataOption = 'ga', generateOption = 'probability', threshold, customConfiguration, toGenericPagePath = (p) => p) {
     console.log('Data: ' + dataOption + ', Generate: ' + generateOption);
 
-    let configuration = require('../files/configuration.json');
+    let configuration = require('../../files/configuration.json');
     if (customConfiguration) {
         configuration = require(`${customConfiguration}`);
     }
@@ -30,14 +31,15 @@ export async function getScenarios (dataOption = 'ga', generateOption = 'probabi
     if (dataOption === 'ga-custom') {
         scenarios = await importUserVisits(configuration, threshold, generateOption, toGenericPagePath);
     } else if (dataOption === 'ga') {
-        scenarios = await importPageVisits(configuration, threshold, generateOption, toGenericPagePath);
+        scenarios = await importPageVisits(configuration, threshold, toGenericPagePath);
     } else {
         throw new Error('No option found for data ' + dataOption);
     }
 
     // Writes the graphs of the scenario's.
     if (configuration.exportOptions.writeScenarioGraphs) {
-        writeScenarioGraph(scenarios);
+        const files = writeScenarioGraphs(scenarios);
+        console.log(`Created the following graph files: ${JSON.stringify(files)}`);
     }
 
     // Writes the scenario's to XML.
@@ -45,7 +47,8 @@ export async function getScenarios (dataOption = 'ga', generateOption = 'probabi
         writeScenariosXML(scenarios);
     }
 
-    writeScenariosJSON(scenarios);
+    const jsonFile = writeScenariosJSON(scenarios);
+    console.log(`Created the following scenarios JSON file: ${jsonFile}`);
 }
 
 async function importUserVisits (configuration, threshold, generateOption, toGenericPagePath) {
@@ -72,7 +75,7 @@ async function importUserVisits (configuration, threshold, generateOption, toGen
     }
 }
 
-async function importPageVisits (configuration, threshold, generateOption, toGenericPagePath) {
+async function importPageVisits (configuration, threshold, toGenericPagePath) {
     const visits = await importVisits(configuration, toGenericPagePath);
 
     var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);

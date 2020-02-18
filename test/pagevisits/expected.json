@@ -1,0 +1,138 @@
+[
+    {
+        "scenarioName": "Global",
+        "scenarioStates": [
+            {
+                "page": "entrance",
+                "events": [],
+                "thinkTime": null,
+                "occurences": 1,
+                "targets": [
+                    {
+                        "target": "/",
+                        "occurences": 1,
+                        "probability": 34
+                    },
+                    {
+                        "target": "/product",
+                        "occurences": 1,
+                        "probability": 33
+                    },
+                    {
+                        "target": "/category",
+                        "occurences": 1,
+                        "probability": 33
+                    }
+                ]
+            },
+            {
+                "page": "/",
+                "events": [
+                    {
+                        "name": "adds-to-cart",
+                        "occurences": 1,
+                        "probability": 50
+                    }
+                ],
+                "thinkTime": {
+                    "avg": 25,
+                    "std": 7.07,
+                    "min": 20,
+                    "max": 30
+                },
+                "occurences": 2,
+                "targets": [
+                    {
+                        "target": "/cart",
+                        "occurences": 1,
+                        "probability": 50
+                    },
+                    {
+                        "target": "abandon",
+                        "occurences": 1,
+                        "probability": 50
+                    }
+                ]
+            },
+            {
+                "page": "/cart",
+                "events": [],
+                "thinkTime": {
+                    "avg": 10,
+                    "std": 0,
+                    "min": 10,
+                    "max": 10
+                },
+                "occurences": 1,
+                "targets": [
+                    {
+                        "target": "/checkout",
+                        "occurences": 1,
+                        "probability": 100
+                    }
+                ]
+            },
+            {
+                "page": "/checkout",
+                "events": [
+                    {
+                        "name": "transaction",
+                        "occurences": 1,
+                        "probability": 100
+                    }
+                ],
+                "thinkTime": {
+                    "avg": 90,
+                    "std": 0,
+                    "min": 90,
+                    "max": 90
+                },
+                "occurences": 1,
+                "targets": [
+                    {
+                        "target": "abandon",
+                        "occurences": 1,
+                        "probability": 100
+                    }
+                ]
+            },
+            {
+                "page": "/product",
+                "events": [],
+                "thinkTime": {
+                    "avg": 30,
+                    "std": 0,
+                    "min": 30,
+                    "max": 30
+                },
+                "occurences": 1,
+                "targets": [
+                    {
+                        "target": "abandon",
+                        "occurences": 1,
+                        "probability": 100
+                    }
+                ]
+            },
+            {
+                "page": "/category",
+                "events": [],
+                "thinkTime": {
+                    "avg": 30,
+                    "std": 0,
+                    "min": 30,
+                    "max": 30
+                },
+                "occurences": 1,
+                "targets": [
+                    {
+                        "target": "/",
+                        "occurences": 1,
+                        "probability": 100
+                    }
+                ]
+            }
+        ],
+        "probability": 100
+    }
+]
