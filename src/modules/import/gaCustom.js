@@ -88,7 +88,7 @@ function getReport (analyticsreporting, configuration, pageToken = 0) {
                 orderBys: [
                     { fieldName: configuration.dimensions.userID },
                     { fieldName: 'ga:sessionCount' },
-                    { fieldName: configuration.dimensions.date },
+                    { fieldName: configuration.dimensions.date }, // Sorted by date, so we do not need to inspect the previous path for this
                     { fieldName: 'ga:entrances', sortOrder: 'DESCENDING' },
                     { fieldName: 'ga:exits' }
                 ],

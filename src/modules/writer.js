@@ -13,7 +13,7 @@ import { calculateArrayStatistics } from './statistics';
  * @param {VisitPath[]} visitPaths the array of visit paths
  * @param {string} [folderLocation='./extractor/files/graphs/'] the folder location the files are saved to.
  */
-export function writeVisitPathGraph (visitPaths, folderLocation = './files/graphs/') {
+export function writeVisitPathGraphs (visitPaths, folderLocation = './files/graphs/') {
     if (!fs.existsSync(folderLocation)) {
         const err = `Cannot write visit graph graph, path does not exist: "${folderLocation}"`;
         console.error(err);
