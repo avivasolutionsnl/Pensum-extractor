@@ -31,6 +31,7 @@
     "libxmljs": "^0.19.5",
     "minimist": "^1.2.0",
     "mocha-helpers": "^3.2.0",
+    "strip-json-comments": "^3.0.1",
     "xml-writer": "^1.7.0",
     "xml2js": "^0.4.19",
     "xmlhttprequest": "^1.8.0",
@@ -38,7 +39,7 @@
   },
   "scripts": {
     "build": "babel ./src -d ./dist --source-maps",
-    "test": "eslint ./** && nyc mocha ./test/*test.js --require @babel/register",
+    "test": "eslint ./** && nyc mocha ./test/**/*.js --require @babel/register",
     "extract": "babel-node ./src/index.js"
   },
   "husky": {
