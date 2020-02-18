@@ -1,7 +1,5 @@
 import { google } from 'googleapis';
 import { Event } from '../../models/event';
-import { XMLHttpRequest } from 'xmlhttprequest';
-import xml2js from 'xml2js';
 
 /**
  * Authenticates to the google analytics reporting API
@@ -33,25 +31,19 @@ function authenticate (configuration) {
 export async function importData (configuration, getReport, convertToVisit) {
     var analyticsreporting = authenticate(configuration);
 
-    var products, categories;
-    if (configuration.exportOptions.useSitemap && configuration.sitemap.productURL && configuration.sitemap.categoriesURL) {
-        products = getProductsFromSitemap(configuration.sitemap.productURL);
-        categories = getCategoriesFromSitemap(configuration.sitemap.categoriesURL);
-    }
-
     var visits = [];
     var result = await getReport(analyticsreporting, configuration.analytics);
     var report = result.data.reports[0];
 
     report.data.rows.forEach(function (element) {
-        visits.push(convertToVisit(element, products, categories));
+        visits.push(convertToVisit(element));
     });
 
     while (report.nextPageToken) {
         result = await getReport(analyticsreporting, configuration.analytics, report.nextPageToken);
         report = result.data.reports[0];
         report.data.rows.forEach(function (element) {
-            visits.push(convertToVisit(element, products, categories));
+            visits.push(convertToVisit(element));
         });
     }
 
@@ -65,7 +57,7 @@ export async function importData (configuration, getReport, convertToVisit) {
  * @param { String } pagePath the pagePath that will be cleaned.
  * @returns { String } the new pagePath
  */
-export function cleanPagePath (pagePath, products, categories) {
+export function cleanPagePath (pagePath) {
     if (pagePath.indexOf('?') >= 0) {
         pagePath = pagePath.substring(0, pagePath.indexOf('?'));
     }
@@ -86,125 +78,7 @@ export function cleanPagePath (pagePath, products, categories) {
         pagePath = pagePath.replace(/(.*sortby)(?:(?:-.*?)?(\/.*)|(?:-.*))/g, '$1$2');
     }
 
-    // Convert pagePath to generic product or category page.
-    if (products && categories) { pagePath = convertPathToGenericProducOrCategoryPath(pagePath, products, categories); }
-
     return pagePath;
-}
-
-/**
- * Executes http request to the specified URL.
- *
- * @export
- * @param { String } url the url.
- * @returns { XMLHttpRequest } the result of the request.
- */
-export function httpRequest (url) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, false);
-    request.setRequestHeader('Content-Type', 'text/xml');
-    request.timeout = 4000;
-    request.send();
-
-    return request;
-}
-
-/**
- * Gets the products from the sitemap.
- *
- * @export
- * @param { String } sitemapURL URL to the product sitemap.
- * @returns { String[] } list of all product paths.
- */
-export function getProductsFromSitemap (sitemapURL) {
-    var request = httpRequest(sitemapURL);
-    var products = [];
-
-    if (request.status !== 200) {
-        console.log('Can\'t load product sitemap from ' + sitemapURL + ', product recognition won\'t work.');
-        return products;
-    }
-
-    xml2js.parseString(request.responseText, function (err, result) {
-        /* istanbul ignore next */
-        if (err) { throw err; }
-        if (result && result.urlset && result.urlset.url) {
-            result.urlset.url.forEach(element => {
-                // Get last part of product url
-                products.push(element.loc[0].match(/http[s]?:\/\/.*(\/.*)/)[1]);
-            });
-        }
-    });
-
-    return products;
-}
-
-/**
- * Gets the categories from the sitemap.
- *
- * @export
- * @param { String } sitemapURL URL to the category sitemap.
- * @returns { String[] } list of all category paths.
- */
-export function getCategoriesFromSitemap (sitemapURL) {
-    var request = httpRequest(sitemapURL);
-    var categories = [];
-
-    if (request.status !== 200) {
-        console.log('Can\'t load category sitemap from ' + sitemapURL + ', category recognition won\'t work.');
-        return categories;
-    }
-
-    xml2js.parseString(request.responseText, function (err, result) {
-        /* istanbul ignore next */
-        if (err) { throw err; }
-        if (result && result.urlset && result.urlset.url) {
-            result.urlset.url.forEach(element => {
-                // Get last part of url without language part which contains the category or multiple categories
-                var path = element.loc[0].match(/http[s]?:\/\/.*?(\/.*)/)[1];
-                if (path.toLowerCase().includes('en/') || path.toLowerCase().includes('nl-nl/')) {
-                    path = path.match(/\/.*?(\/.*)/)[1];
-                }
-
-                if (path !== '/') {
-                    categories.push(path);
-                }
-            });
-        }
-    });
-
-    return categories;
-}
-
-/**
- * Converts a path to a generic /product or /category path.
- *
- * @export
- * @param { String } path the path that is used.
- * @param { String[] } products the products array.
- * @param { String[] } categories the categories array.
- * @returns { String } returns the new path.
- */
-export function convertPathToGenericProducOrCategoryPath (path, products, categories) {
-    var extractedPathLevels = path.split('/').filter(x => x);
-    if (path.length !== 1) {
-        if (products.find(x => x.includes(path.substring(path.lastIndexOf('/') + 1, path.length)))) {
-            path = '/product';
-        } else if (categories.find(x => new RegExp(extractedPathLevels[0] + '([/]|$)', 'g').test(x))) {
-            path = '';
-            extractedPathLevels = extractedPathLevels.reverse();
-            extractedPathLevels.forEach(pathLevel => {
-                if (categories.find(x => x.includes(pathLevel))) {
-                    if (!path.includes('category')) {
-                        path = '/category' + path;
-                    }
-                } else if (pathLevel.includes('sortby') || pathLevel.includes('page')) {
-                    path = '/' + pathLevel + path;
-                }
-            });
-        }
-    }
-    return path;
 }
 
 /**

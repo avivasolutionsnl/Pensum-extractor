@@ -7,11 +7,12 @@ import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics'
  *
  * @export
  * @param { Object } configuration
+ * @param { Function } toGenericPagePath
  * @returns { UserVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function importVisits (configuration) {
-    var visits = await importData(configuration, getReport, convertToUserVisit);
+export async function importVisits (configuration, toGenericPagePath) {
+    var visits = await importData(configuration, getReport, (e) => convertToUserVisit(e, toGenericPagePath));
     return visits;
 }
 
@@ -21,7 +22,7 @@ export async function importVisits (configuration) {
  * @param { object } element the google analytics row.
  * @returns { UserVisit } the created UserVisit object.
  */
-export function convertToUserVisit (element, products, categories) {
+export function convertToUserVisit (element, toGenericPagePath = (p) => p) {
     // Get all the dimensions out of the element.
     var userSessionID = element.dimensions[0];
     var sessionNumber = element.dimensions[2];
@@ -37,7 +38,7 @@ export function convertToUserVisit (element, products, categories) {
     var identifier = userSessionID + '_' + sessionNumber;
 
     // cleaning
-    pagePath = cleanPagePath(pagePath, products, categories);
+    pagePath = toGenericPagePath(cleanPagePath(pagePath));
 
     // Add events
     var events = getCommerceEvents(addsToCart, removesFromCart, transactions);

@@ -9,11 +9,12 @@ const entranceValue = '(entrance)';
  *
  * @export
  * @param { Object } configuration the configuration that is used for Google Analytics.
+ * @param { Function } toGenericPagePath
  * @returns { PageVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function importVisits (configuration) {
-    return importData(configuration, getReport, convertToPageVisit);
+export async function importVisits (configuration, toGenericPagePath) {
+    return importData(configuration, getReport, (e) => convertToPageVisit(e, toGenericPagePath));
 }
 
 /**
@@ -22,7 +23,7 @@ export async function importVisits (configuration) {
  * @param { object } element the google analytics row.
  * @returns { PageVisit } the created PageVisit object.
  */
-export function convertToPageVisit (element, products, categories) {
+export function convertToPageVisit (element, toGenericPagePath = (p) => p) {
     // Get all the dimensions out of the element.
     element.dimensions.map(s => s.toLowerCase());
     let [pagePath, previousPagePath] = element.dimensions;
@@ -31,8 +32,8 @@ export function convertToPageVisit (element, products, categories) {
     let [occurences, thinkTime, entrances, exit, addsToCart, removesFromCart, transactions] = element.metrics[0].values;
 
     // cleaning
-    pagePath = cleanPagePath(pagePath, products, categories);
-    previousPagePath = cleanPagePath(previousPagePath, products, categories);
+    pagePath = toGenericPagePath(cleanPagePath(pagePath));
+    previousPagePath = toGenericPagePath(cleanPagePath(previousPagePath));
     if (previousPagePath === entranceValue) {
         previousPagePath = 'entrance';
     }

@@ -1,49 +1,8 @@
-import { convertPathToGenericProducOrCategoryPath } from '../src/modules/import/googleanalytics';
 import { convertToPageVisit } from '../src/modules/import/ga';
 import { convertToUserVisit } from '../src/modules/import/gaCustom';
 import assert from 'assert';
 
 describe('Data cleaning', function () {
-    // Products
-    var products = ['/AA01', '/BB05', '/AB026'];
-
-    // Categories
-    var categories = ['/drinks', '/drinks/cans', '/drinks/bottles', '/vegetables'];
-
-    describe('#convertPathToGenericProducOrCategoryPath()', function () {
-        it('should convert /drinks/cans to /category', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/drinks/cans', products, categories), '/category');
-        });
-
-        it('should convert /drinks/cans/sortby to /category/sortby', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/drinks/cans/sortby', products, categories), '/category/sortby');
-        });
-
-        it('should convert /AA01 to /product', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/AA01', products, categories), '/product');
-        });
-
-        it('should convert /drinks/AA01 to /product', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/drinks/AA01', products, categories), '/product');
-        });
-
-        it('should convert / to /', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/', products, categories), '/');
-        });
-
-        it('should convert /winkels to /winkels', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/winkels', products, categories), '/winkels');
-        });
-
-        it('should convert /drinks/page-5 to /category/page-5', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/drinks/page-5', products, categories), '/category/page-5');
-        });
-
-        it('should convert /drinks/niks to /category', function () {
-            assert.strictEqual(convertPathToGenericProducOrCategoryPath('/drinks/niks', products, categories), '/category');
-        });
-    });
-
     describe('#convertToUserVisit()', function () {
         var element = {
             dimensions: ['1', '1553847449714', '1', '/'],
@@ -53,7 +12,7 @@ describe('Data cleaning', function () {
         };
 
         it('first element should convert to correct user and page visit', function () {
-            var visit = convertToUserVisit(element, products, categories);
+            var visit = convertToUserVisit(element);
             assert.strictEqual(visit.identifier, '1_1');
             assert.strictEqual(visit.page, '/');
             assert.strictEqual(visit.timeOnPage, 10);
@@ -69,7 +28,7 @@ describe('Data cleaning', function () {
         };
 
         it('second element should convert to correct visit', function () {
-            var visit = convertToUserVisit(element2, products, categories);
+            var visit = convertToUserVisit(element2);
             assert.strictEqual(visit.identifier, '2_1');
             assert.strictEqual(visit.page, '/search');
             assert.strictEqual(visit.timeOnPage, 3);
@@ -119,7 +78,7 @@ describe('Data cleaning', function () {
         };
 
         it('first element should convert to correct user and page visit', function () {
-            var visit = convertToPageVisit(element, products, categories);
+            var visit = convertToPageVisit(element);
             assert.strictEqual(visit.page, '/');
             assert.strictEqual(visit.previousPage, 'entrance');
             assert.strictEqual(visit.timeOnPage, 6);
@@ -134,7 +93,7 @@ describe('Data cleaning', function () {
         };
 
         it('second element should convert to correct visit', function () {
-            var visit = convertToPageVisit(element2, products, categories);
+            var visit = convertToPageVisit(element2);
             assert.strictEqual(visit.page, '/search');
             assert.strictEqual(visit.previousPage, '/');
             assert.strictEqual(visit.timeOnPage, 12);
