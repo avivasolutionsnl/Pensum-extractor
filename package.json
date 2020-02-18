@@ -1,5 +1,5 @@
 {
-  "name": "pensum",
+  "name": "pensum-extractor",
   "version": "1.0.0",
   "description": "Extract load-test scenarios from historical website visitor data",
   "devDependencies": {
