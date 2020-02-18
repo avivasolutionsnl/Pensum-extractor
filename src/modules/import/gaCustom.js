@@ -1,6 +1,6 @@
 import { UserVisit } from '../../models/uservisit';
 import { Visit } from '../../models/visit';
-import { importData, cleanPagePath, getCommerceEvents } from '../googleanalytics';
+import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 /**
  * Gets all the visits, the custom getReport() and convertToUserVisit() are passed.

@@ -1,4 +1,4 @@
-import { convertPathToGenericProducOrCategoryPath } from '../src/modules/googleanalytics';
+import { convertPathToGenericProducOrCategoryPath } from '../src/modules/import/googleanalytics';
 import { convertToPageVisit } from '../src/modules/import/ga';
 import { convertToUserVisit } from '../src/modules/import/gaCustom';
 import assert from 'assert';

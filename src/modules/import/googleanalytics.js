@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { Event } from '../models/event';
+import { Event } from '../../models/event';
 import { XMLHttpRequest } from 'xmlhttprequest';
 import xml2js from 'xml2js';
 

@@ -1,6 +1,6 @@
 import { PageVisit } from '../../models/pagevisit';
 import { Visit } from '../../models/visit';
-import { importData, cleanPagePath, getCommerceEvents } from '../googleanalytics';
+import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 const entranceValue = '(entrance)';
 
