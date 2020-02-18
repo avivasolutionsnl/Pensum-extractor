@@ -30,7 +30,7 @@ function authenticate (configuration) {
  * @returns
  */
 /* istanbul ignore next */
-export async function exportData (configuration, getReport, convertToVisit) {
+export async function importData (configuration, getReport, convertToVisit) {
     var analyticsreporting = authenticate(configuration);
 
     var products, categories;
@@ -42,6 +42,7 @@ export async function exportData (configuration, getReport, convertToVisit) {
     var visits = [];
     var result = await getReport(analyticsreporting, configuration.analytics);
     var report = result.data.reports[0];
+
     report.data.rows.forEach(function (element) {
         visits.push(convertToVisit(element, products, categories));
     });

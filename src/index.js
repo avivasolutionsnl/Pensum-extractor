@@ -1,8 +1,8 @@
 import { createScenariosExact } from './modules/scenario/scenarioexact';
 import { createScenariosProbability } from './modules/scenario/scenarioprobability';
 import { createVisitPaths } from './modules/visitpath';
-import { exportDataGa } from './modules/export/exportdataga';
-import { exportDataGaCustom } from './modules/export/exportdatagacustom';
+import { importVisits as importCustomVisits } from './modules/import/gaCustom';
+import { importVisits } from './modules/import/ga';
 import { writeScenariosXML, writeScenariosJSON, writeVisitPathGraph, writeScenarioGraph } from './modules/writer';
 import { getThinkTimesForEachPage } from './modules/statistics';
 import minimist from 'minimist';
@@ -34,7 +34,7 @@ function getScenarios (dataOption = 'ga', generateOption = 'probability', thresh
     var scenarios;
     if (dataOption === 'ga-custom') {
         // User visits
-        exportDataGaCustom(configuration).then(visits => {
+        importCustomVisits(configuration).then(visits => {
             var thinkTimes = null;
             // Calculates the think times per page instead of per state.
             if (configuration.exportOptions.thinkTimesPerPage || generateOption === 'probability') { thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers); }
@@ -59,7 +59,7 @@ function getScenarios (dataOption = 'ga', generateOption = 'probability', thresh
         });
     } else if (dataOption === 'ga') {
         // Page visits
-        exportDataGa(configuration).then(visits => {
+        importVisits(configuration).then(visits => {
             var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);
             scenarios = createScenariosProbability(visits, thinkTimes, threshold);
 

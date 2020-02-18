@@ -1,6 +1,6 @@
 import { convertPathToGenericProducOrCategoryPath } from '../src/modules/googleanalytics';
-import { convertToUserVisit } from '../src/modules/export/exportdatagacustom';
-import { convertToPageVisit } from '../src/modules/export/exportdataga';
+import { convertToPageVisit } from '../src/modules/import/ga';
+import { convertToUserVisit } from '../src/modules/import/gaCustom';
 import assert from 'assert';
 
 describe('Data cleaning', function () {
