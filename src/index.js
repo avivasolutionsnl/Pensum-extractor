@@ -19,10 +19,10 @@ getScenarios(args.data, args.generate, 1, args.configuration);
  * @param { Number } threshold threshold number that indicates at what percentage the scenario or scenariostate target needs to occur.
  * @param { Object } customConfiguration custom configuration that is used for export and/or google analytics settings.
  */
-function getScenarios (dataOption = 'ga', generateOption = 'probability', threshold, customConfiguration) {
+async function getScenarios (dataOption = 'ga', generateOption = 'probability', threshold, customConfiguration) {
     console.log('Data: ' + dataOption + ', Generate: ' + generateOption);
 
-    var configuration = require('../files/configuration.json');
+    let configuration = require('../files/configuration.json');
     if (customConfiguration) {
         configuration = require(`${customConfiguration}`);
     }
@@ -31,45 +31,53 @@ function getScenarios (dataOption = 'ga', generateOption = 'probability', thresh
         throw new Error('missing configuration file.');
     }
 
-    var scenarios;
+    let scenarios;
     if (dataOption === 'ga-custom') {
-        // User visits
-        importCustomVisits(configuration).then(visits => {
-            var thinkTimes = null;
-            // Calculates the think times per page instead of per state.
-            if (configuration.exportOptions.thinkTimesPerPage || generateOption === 'probability') { thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers); }
-
-            var visitPaths = createVisitPaths(visits);
-            // Generates the visit graphs with DOT language.
-            if (configuration.exportOptions.writeVisitGraphs) { writeVisitPathGraph(visitPaths); }
-
-            if (generateOption === 'exact') {
-                scenarios = createScenariosExact(visitPaths, thinkTimes, threshold, configuration.exportOptions.removeOutliers);
-            } else if (generateOption === 'probability') {
-                scenarios = createScenariosProbability(visitPaths, thinkTimes, threshold);
-            } else {
-                throw new Error('No option found for generate ' + generateOption);
-            }
-
-            // Writes the graphs of the scenario's.
-            if (configuration.exportOptions.writeScenarioGraphs) { writeScenarioGraph(scenarios); }
-            // Writes the scenario's to XML.
-            if (configuration.exportOptions.xml) { writeScenariosXML(scenarios); }
-            writeScenariosJSON(scenarios);
-        });
+        scenarios = await importUserVisits(configuration, threshold)
     } else if (dataOption === 'ga') {
-        // Page visits
-        importVisits(configuration).then(visits => {
-            var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);
-            scenarios = createScenariosProbability(visits, thinkTimes, threshold);
-
-            // Writes the graphs of the scenario's.
-            if (configuration.exportOptions.writeScenarioGraphs) { writeScenarioGraph(scenarios); }
-            // Writes the scenario's to XML.
-            if (configuration.exportOptions.xml) { writeScenariosXML(scenarios); }
-            writeScenariosJSON(scenarios);
-        });
+        scenarios = await importPageVisits(configuration, threshold);
     } else {
         throw new Error('No option found for data ' + dataOption);
     }
+
+    // Writes the graphs of the scenario's.
+    if (configuration.exportOptions.writeScenarioGraphs) { 
+        writeScenarioGraph(scenarios); 
+    }
+
+    // Writes the scenario's to XML.
+    if (configuration.exportOptions.xml) { 
+        writeScenariosXML(scenarios); 
+    }
+
+    writeScenariosJSON(scenarios);
+}
+
+async function importUserVisits(configuration, threshold) {
+    const visits = await importCustomVisits(configuration);
+    
+    var thinkTimes = null;
+    // Calculates the think times per page instead of per state.
+    if (configuration.exportOptions.thinkTimesPerPage || generateOption === 'probability') { 
+        thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers); 
+    }
+
+    var visitPaths = createVisitPaths(visits);
+    // Generates the visit graphs with DOT language.
+    if (configuration.exportOptions.writeVisitGraphs) { writeVisitPathGraph(visitPaths); }
+
+    if (generateOption === 'exact') {
+        return createScenariosExact(visitPaths, thinkTimes, threshold, configuration.exportOptions.removeOutliers);
+    } else if (generateOption === 'probability') {
+        return createScenariosProbability(visitPaths, thinkTimes, threshold);
+    } else {
+        throw new Error('No option found for generate ' + generateOption);
+    }
+}
+
+async function importPageVisits(configuration, threshold) {
+    const visits = await importVisits(configuration)
+    
+    var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);
+    return createScenariosProbability(visits, thinkTimes, threshold);
 }
