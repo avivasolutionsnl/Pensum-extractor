@@ -3,7 +3,7 @@ import { Visit } from '../../models/visit';
 import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 /**
- * Gets all the visits
+ * Gets all the user visits
  *
  * @export
  * @param { Object } configuration

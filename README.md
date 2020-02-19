@@ -3,7 +3,7 @@ The extractor is used for distilling a load-test scenario out of the historical 
 The extracted scenario can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner).
 
 ## Usage
-First provide your Google Analytics authentication details, metrics and dimensions and/or sitemap locations for product and categories in a configuration file. An example configuration file is available [here](./files/configuration.json), see [configuration](#configuration) for a full description of the options.
+First provide your Google Analytics authentication details, metrics and dimensions in a configuration file. An example configuration file is available [here](./files/configuration.json), see [configuration](#configuration) for a full description of the options.
 
 Run `extract` with arguments, e.g:
 

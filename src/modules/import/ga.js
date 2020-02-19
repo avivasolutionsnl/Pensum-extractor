@@ -5,7 +5,7 @@ import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics'
 const entranceValue = '(entrance)';
 
 /**
- * Gets all the visits
+ * Gets all the page visits
  *
  * @export
  * @param { Object } configuration the configuration that is used for Google Analytics.
