@@ -15,7 +15,36 @@ This will create a JSON file holding the scenarios that can be run using [Pensum
 
 A minimal example of Google Analytics input and its resulting output can be found in [this test](./test/pagevisits/scenario.js).
 
-// TODO: how to run with pensum-runner?
+### Convert to a runnable workload model
+As the Pensum runner executes a workload model, so to run it you will need to convert the scenarios JSON file to a workload model.
+Pensum extractor provides a `createWorkloadFromScenario` (see [workload.js](./src/workload.js)) function that helps you with it, for example:
+```
+const scenarios = JSON.parse(fs.readFileSync(<YOUR SCENARIOS JSON FILE>).toString())
+const myScenario = scenarios[0]
+const workload = createWorkloadFromScenario(myScenario, mapPageToFun, mapEventToFun)
+
+function mapPageToFun(page) {
+    switch(page) {
+        case '/':
+            return () => console.log(`Visit ${page} page`)
+        case 'abandon':
+        case 'entrance':
+            return () => console.log(page)
+        default:
+            return null
+    }
+}
+
+function mapEventToFun(event) {
+    switch(event) {
+        case 'adds-to-cart':
+            return () => console.log('Add item to cart')
+        default:
+            return null
+    }
+}
+```
+See [here](./test/pagevisits/workload.js) for a full example.
 
 ## Configuration
 For generating the scenarios multiple options can be provided. The strategy for getting the data and creating the scenarios is provided using CLI arguments. 
