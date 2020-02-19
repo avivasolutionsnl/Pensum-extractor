@@ -4,7 +4,7 @@
  * @param { Scenario } scenario the chosen scenario.
  * @returns returns a workload model
  */
-export function createWorkloadFromScenario (scenario, mapPageToFun = (p) => null, mapEventToFun = (p) => null, runRandom = (r) => r) {
+export function createWorkloadFromScenario (scenario, mapPageToFun = (p) => null, mapEventToFun = (p) => null) {
     const states = [];
 
     scenario.scenarioStates.forEach(scenarioState => {
@@ -15,23 +15,17 @@ export function createWorkloadFromScenario (scenario, mapPageToFun = (p) => null
             throw Error(`No function found for page: ${page}`);
         }
 
+        if (events) {
+            events.map(e => e.action = mapEventToFun(e.name))
+        }
+
         states.push({
             name: page,
             targets: targets,
             action: function () {
                 pageFun(thinkTime); // Visit page action
-
-                if (events) {
-                    // Randomly select an event
-                    const event = runRandom(events);
-                    if (event) {
-                        var eventFun = mapEventToFun(event.name);
-                        if (eventFun) {
-                            eventFun();
-                        }
-                    }
-                }
-            }
+            },
+            events
         });
     });
 
