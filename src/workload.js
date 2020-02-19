@@ -16,7 +16,7 @@ export function createWorkloadFromScenario (scenario, mapPageToFun = (p) => null
         }
 
         if (events) {
-            events.map(e => e.action = mapEventToFun(e.name))
+            events.map(e => { e.action = mapEventToFun(e.name); });
         }
 
         states.push({
@@ -44,4 +44,3 @@ export function createWorkloadFromScenario (scenario, mapPageToFun = (p) => null
         states: states
     };
 }
-

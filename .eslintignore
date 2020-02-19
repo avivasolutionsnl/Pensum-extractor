@@ -3,6 +3,7 @@
 /runner/vendor
 /files/
 
+CODEOWNERS
 README.md
 *.dot
 *.json
