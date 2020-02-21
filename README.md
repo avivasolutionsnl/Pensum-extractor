@@ -1,6 +1,19 @@
-# Extractor
-The extractor is used for distilling a load-test scenario out of the historical data. The current implementation uses Google Analytics data.
-The extracted scenario can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner).
+# Pensum Extractor
+The Pensum-extractor tool distills a load-test scenario out of historical Google Analytics data. 
+
+> Pensum-extractor is part of the Pensum toolset which helps you extract, model, and run realistic load-tests.
+An extracted scenario can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner). 
+
+Using historical data gives you the advantage of creating a realistic load-test. A realistic load-test is defined as:
+1. all (visited) pages are present
+2. not visited pages and thus irrelevant pages are *not* present
+3. the likelihood of visiting a certain page is modelled and matches reality
+4. the path, ie. order of pages and actions, that users take through your site matches reality
+
+As historical data quickly grows too large to manually inspect, the only way to extract a test from it is automatically *and* that is where Pensum-extractor comes into play.
+
+The current Pensum-extractor implementation uses Google Analytics (GA) as data source. Although other datasources could in principle be used, 
+GA is considered to be most widely used website analytics tool and therefore chosen as first option.
 
 ## Usage
 First provide your Google Analytics authentication details, metrics and dimensions in a configuration file. An example configuration file is available [here](./files/configuration.json), see [configuration](#configuration) for a full description of the options.
@@ -11,12 +24,14 @@ Run `extract` with arguments, e.g:
 > npm run extract -- --configuration <configuration.json>
 ```
 
-This will create a JSON file holding the scenarios that can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner).
+This will create a JSON file with the scenarios. To make a scenario exectuable, using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner), you will to convert it to a workload model which the runner can handle.
+
+> See [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner) for the workload model definition
 
 A minimal example of Google Analytics input and its resulting output can be found in [this test](./test/pagevisits/scenario.js).
 
-### Convert to a runnable workload model
-As the Pensum runner executes a workload model, so to run it you will need to convert the scenarios JSON file to a workload model.
+### Convert to a Pensum workload model
+As the Pensum runner executes a workload model, you will need to convert the scenarios from the JSON file to a workload model.
 Pensum extractor provides a `createWorkloadFromScenario` (see [workload.js](./src/workload.js)) function that helps you with it, for example:
 ```
 const scenarios = JSON.parse(fs.readFileSync(<YOUR SCENARIOS JSON FILE>).toString())
@@ -46,9 +61,12 @@ function mapEventToFun(event) {
 ```
 See [here](./test/pagevisits/workload.js) for a full example.
 
+The `mapPageToFun` and `mapEventToFun` functions map to functions that will be performed once a page is visited and/or when an event is triggered. In other words these are functions that you, as developer, need to implement to make the load-test functional. See [here](https://github.com/avivasolutionsnl/pensum-runner#Usage) for a more detailed explanation and example.
+
 ## Configuration
-For generating the scenarios multiple options can be provided. The strategy for getting the data and creating the scenarios is provided using CLI arguments. 
-By default Google Analytics (without custom dimensions) and the probability method is used. Using this method you will get one scenario.
+For generating the scenarios multiple options can be provided. By default Google Analytics (without custom dimensions) and the *probability* method is used. The *probability* method models the likelihood that a certain page is visited. It uses herefore the total number of times a page is visited. Using this method you will get one scenario.
+
+The strategy for getting the data and creating the scenarios is provided using CLI arguments.
 
 ### Algorithm selection
 By adding 2 custom dimensions to [Google Tag Manager](https://tagmanager.google.com/):
