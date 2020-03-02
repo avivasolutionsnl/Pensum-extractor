@@ -1,19 +1,19 @@
 # Pensum Extractor
-The Pensum-extractor tool distills a load-test scenario out of historical Google Analytics data. 
+The Pensum-extractor tool distills a load-test scenario out of historical Google Analytics data.
 
 > Pensum-extractor is part of the Pensum toolset which helps you extract, model, and run realistic load-tests.
-An extracted scenario can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner). 
+An extracted scenario can be run using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner).
 
 Using historical data gives you the advantage of creating a realistic load-test. A realistic load-test is defined as:
 1. all (visited) pages are present
 2. not visited pages and thus irrelevant pages are *not* present
-3. the likelihood of visiting a certain page is modelled and matches reality
+3. the probability of visiting a certain page is modelled and matches reality
 4. the path, ie. order of pages and actions, that users take through your site matches reality
 
-As historical data quickly grows too large to manually inspect, the only way to extract a test from it is automatically *and* that is where Pensum-extractor comes into play.
+As historical data quickly grows too large to manually inspect, the only way to extract a test from it is automatically and *that* is where Pensum-extractor comes into play.
 
 The current Pensum-extractor implementation uses Google Analytics (GA) as data source. Although other datasources could in principle be used, 
-GA is considered to be most widely used website analytics tool and therefore chosen as first option.
+GA is considered to be the most widely used website analytics tool and therefore chosen at first.
 
 ## Usage
 First provide your Google Analytics authentication details, metrics and dimensions in a configuration file. An example configuration file is available [here](./files/configuration.json), see [configuration](#configuration) for a full description of the options.
@@ -64,12 +64,20 @@ See [here](./test/pagevisits/workload.js) for a full example.
 The `mapPageToFun` and `mapEventToFun` functions map to functions that will be performed once a page is visited and/or when an event is triggered. In other words these are functions that you, as developer, need to implement to make the load-test functional. See [here](https://github.com/avivasolutionsnl/pensum-runner#Usage) for a more detailed explanation and example.
 
 ## Configuration
-For generating the scenarios multiple options can be provided. By default Google Analytics (without custom dimensions) and the *probability* method is used. The *probability* method models the likelihood that a certain page is visited. It uses herefore the total number of times a page is visited. Using this method you will get one scenario.
+The strategy for getting the data and creating the scenarios is provided using CLI arguments. By default the *probability* strategy is used.
 
-The strategy for getting the data and creating the scenarios is provided using CLI arguments.
+All other options are provided using a configuration file.
 
-### Algorithm selection
-By adding 2 custom dimensions to [Google Tag Manager](https://tagmanager.google.com/):
+### Strategies
+#### Probability strategy
+For generating the scenarios multiple options can be provided. By default Google Analytics (without custom dimensions) and the *probability* method is used. The *probability* method models the likelihood that a certain page is visited. To determine the probability that a user visits another page, it simply divides the number of times a next page is visited by the total outgoing visits. 
+
+The *probability* method does not take previously visited pages into account and thus will this method give one scenario. Not taking the full visit path into account might lead to inaccurate results. In case this concerns you, consider using the (more complex) exact strategy.
+
+#### Exact strategy
+The exact method takes the complete path of a visitor into account to calculate the probability of visiting a next page.
+
+To distinguish unique visit paths, 2 custom dimensions need to be added to the [Google Tag Manager](https://tagmanager.google.com/):
 - `configuration.dimensions.userID`: a unique id per visitor
 - `configuration.dimensions.date`: a precise timestamp (which allows fine grained ordering of page visits/events)
 
@@ -79,8 +87,6 @@ To use the custom dimensions use the `--data` CLI option:
 ```
 > npm run extract -- --configuration <configuration.json> --data ga-custom
 ```
-
-Other options are provided using a configuration file.
 
 ### Google Analytics
 Google Analytics authentication settings can be set in the configuration file, for example:
