@@ -1,18 +1,23 @@
 import { UserVisit } from '../../models/uservisit';
 import { Visit } from '../../models/visit';
-import { exportData, cleanPagePath, getCommerceEvents } from '../googleanalytics';
+import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 /**
- * Calls the export data function that gets all the visits, the custom getReport() and convertToUserVisit() are passed.
+ * Gets all the user visits
  *
  * @export
  * @param { Object } configuration
+ * @param { Function } toGenericPagePath
+ * @param { Array } GA data elements
  * @returns { UserVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function exportDataGaCustom (configuration) {
-    var visits = await exportData(configuration, getReport, convertToUserVisit);
-    return visits;
+export async function importVisits (configuration, toGenericPagePath, data = null) {
+    if (!data) {
+        data = await importData(configuration, getReport);
+    }
+
+    return data.map(e => convertToUserVisit(e, toGenericPagePath));
 }
 
 /**
@@ -21,7 +26,7 @@ export async function exportDataGaCustom (configuration) {
  * @param { object } element the google analytics row.
  * @returns { UserVisit } the created UserVisit object.
  */
-export function convertToUserVisit (element, products, categories) {
+export function convertToUserVisit (element, toGenericPagePath = (p) => p) {
     // Get all the dimensions out of the element.
     var userSessionID = element.dimensions[0];
     var sessionNumber = element.dimensions[2];
@@ -37,7 +42,7 @@ export function convertToUserVisit (element, products, categories) {
     var identifier = userSessionID + '_' + sessionNumber;
 
     // cleaning
-    pagePath = cleanPagePath(pagePath, products, categories);
+    pagePath = toGenericPagePath(cleanPagePath(pagePath));
 
     // Add events
     var events = getCommerceEvents(addsToCart, removesFromCart, transactions);
@@ -77,12 +82,13 @@ function getReport (analyticsreporting, configuration, pageToken = 0) {
                     { name: configuration.dimensions.userID },
                     { name: configuration.dimensions.date },
                     { name: 'ga:sessionCount' },
-                    { name: 'ga:pagepath' }
+                    { name: 'ga:pagepath' },
+                    { name: 'ga:previousPagePath' }
                 ],
                 orderBys: [
                     { fieldName: configuration.dimensions.userID },
                     { fieldName: 'ga:sessionCount' },
-                    { fieldName: configuration.dimensions.date },
+                    { fieldName: configuration.dimensions.date }, // Sorted by date, so we do not need to inspect the previous path for this
                     { fieldName: 'ga:entrances', sortOrder: 'DESCENDING' },
                     { fieldName: 'ga:exits' }
                 ],

@@ -1,0 +1,119 @@
+[
+    // Visitor 1
+    {
+        "dimensions": [
+            "/",         // current page path
+            "(entrance)" // previous page path
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "1",    // number of page views
+                    "30.0", // total time on page
+                    "1",    // number of entrances
+                    "0",    // number of exits
+                    "1",    // number of productAddToCart events
+                    "0",    // number of productRemovesFromCart events
+                    "0"     // number of transaction events
+                ]
+            }
+        ]
+    },
+    {
+        "dimensions": [
+            "/cart",
+            "/"
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "1",
+                    "10.0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
+                ]
+            }
+        ]
+    },
+    {
+        "dimensions": [
+            "/checkout",
+            "/cart"
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "2",
+                    "90.0",
+                    "1",
+                    "1",
+                    "0",
+                    "0",
+                    "1"
+                ]
+            }
+        ]
+    },
+    // Visitor 2
+    {
+        "dimensions": [
+            "/product",
+            "(entrance)"
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "2",
+                    "30.0",
+                    "1",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                ]
+            }
+        ]
+    },
+    // Visitor 3
+    {
+        "dimensions": [
+            "/category",
+            "(entrance)"
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "1",
+                    "30.0",
+                    "1",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
+                ]
+            }
+        ]
+    },
+    {
+        "dimensions": [
+            "/",
+            "/category"
+        ],
+        "metrics": [
+            {
+                "values": [
+                    "2",
+                    "20.0",
+                    "0",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                ]
+            }
+        ]
+    }
+]

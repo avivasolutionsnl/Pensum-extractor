@@ -13,7 +13,13 @@ import { calculateArrayStatistics } from './statistics';
  * @param {VisitPath[]} visitPaths the array of visit paths
  * @param {string} [folderLocation='./extractor/files/graphs/'] the folder location the files are saved to.
  */
-export function writeVisitPathGraph (visitPaths, folderLocation = './extractor/files/graphs/') {
+export function writeVisitPathGraphs (visitPaths, folderLocation = './files/graphs/') {
+    if (!fs.existsSync(folderLocation)) {
+        const err = `Cannot write visit graph graph, path does not exist: "${folderLocation}"`;
+        console.error(err);
+        throw Error(err);
+    }
+
     del.sync([folderLocation + '*.dot']);
 
     visitPaths.forEach((visitPath, index) => {
@@ -61,11 +67,19 @@ export function writeVisitPathGraph (visitPaths, folderLocation = './extractor/f
  *
  * @export
  * @param {Scenario[]} scenarios the array of scenarios
- * @param {string} [folderLocation='./extractor/files/scenarios/'] the folder location the files are saved to.
+ * @param {string} [folderLocation='./files/scenarios/'] the folder location the files are saved to.
+ * @returns List of created files
  */
-export function writeScenarioGraph (scenarios, folderLocation = './extractor/files/scenarios/') {
+export function writeScenarioGraphs (scenarios, folderLocation = './files/scenarios/') {
+    if (!fs.existsSync(folderLocation)) {
+        const err = `Cannot write scenario graph, path does not exist: "${folderLocation}"`;
+        console.error(err);
+        throw Error(err);
+    }
+
     del.sync([folderLocation + '*.dot']);
 
+    const filenames = [];
     scenarios.forEach((scenario, index) => {
         var digraph = new Graph();
         scenario.scenarioStates.forEach(function (state) {
@@ -93,9 +107,12 @@ export function writeScenarioGraph (scenarios, folderLocation = './extractor/fil
             });
         });
 
-        fs.writeFileSync(folderLocation + 'scenario_graph' + index + '.dot', dot.write(digraph));
+        const filename = `${folderLocation}scenario_graph${index}.dot`;
+        fs.writeFileSync(filename, dot.write(digraph));
+        filenames.push(filename);
     });
-    console.log('scenario graphs saved to ' + folderLocation + ' directory.');
+
+    return filenames;
 }
 
 /**
@@ -103,10 +120,16 @@ export function writeScenarioGraph (scenarios, folderLocation = './extractor/fil
  *
  * @export
  * @param { Scenario[] } scenarios the scenarios.
- * @param {string} [xmlDefinitionfile='./extractor/files/scenarios_definition.xsd'] The location of the xsd file.
+ * @param {string} [xmlDefinitionfile='./files/scenarios_definition.xsd'] The location of the xsd file.
  * @param {string} [file='./scenarios.xml'] the file the xml is saved to.
  */
-export function writeScenariosXML (scenarios, xmlDefinitionfile = './extractor/files/scenarios_definition.xsd', file = './scenarios.xml') {
+export function writeScenariosXML (scenarios, xmlDefinitionfile = './files/scenarios_definition.xsd', file = './scenarios.xml') {
+    if (!fs.existsSync(xmlDefinitionfile)) {
+        const err = `Cannot find xml definition file: "${xmlDefinitionfile}"`;
+        console.error(err);
+        throw Error(err);
+    }
+
     // create xml
     var xw = new XMLWriter(true);
     xw.startDocument();
@@ -197,10 +220,10 @@ function writeScenarioTarget (xw, target) {
  * @export
  * @param { Scenario[] } scenarios the scenarios array.
  * @param {string} [file='./scenarios.json'] the file that the scenarios are saved to.
+ * @returns written filename
  */
 export function writeScenariosJSON (scenarios, file = './scenarios.json') {
-    // stringify JSON Object
     var jsonContent = JSON.stringify(scenarios, null, 4);
     fs.writeFileSync(file, jsonContent, 'utf8');
-    console.log(file + ' saved!');
+    return file;
 }

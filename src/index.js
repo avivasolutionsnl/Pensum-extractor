@@ -1,73 +1,12 @@
-import { createScenariosExact } from './modules/scenario/scenarioexact';
-import { createScenariosProbability } from './modules/scenario/scenarioprobability';
-import { createVisitPaths } from './modules/visitpath';
-import { exportDataGa } from './modules/export/exportdataga';
-import { exportDataGaCustom } from './modules/export/exportdatagacustom';
-import { writeScenariosXML, writeScenariosJSON, writeVisitPathGraph, writeScenarioGraph } from './modules/writer';
-import { getThinkTimesForEachPage } from './modules/statistics';
 import minimist from 'minimist';
+import { getScenarios } from './modules/scenarios';
+
+function toGenericPagePath (path) {
+    // Implement in case you want to generalize certain page paths
+    // e.g. using the sitemap to combine multiple product pages of the same type into one
+    return path;
+}
 
 const args = minimist(process.argv.slice(2));
 // Data option, generate option, treshold and configuration
-getScenarios(args.data, args.generate, 1, args.configuration);
-
-/**
- * Creates the scenarios with given options.
- *
- * @param { String } dataOption option for getting the data. (ga-custom, ga).
- * @param { String } generateOption option for generating the scenarios. (exact, probability)
- * @param { Number } threshold threshold number that indicates at what percentage the scenario or scenariostate target needs to occur.
- * @param { Object } customConfiguration custom configuration that is used for export and/or google analytics settings.
- */
-function getScenarios (dataOption, generateOption, threshold, customConfiguration) {
-    console.log('Data: ' + dataOption + ', Generate: ' + generateOption);
-
-    var configuration = require('../files/configuration.json');
-    if (customConfiguration) {
-        configuration = require(process.cwd() + customConfiguration);
-    }
-
-    if (!configuration) {
-        throw new Error('missing configuration file.');
-    }
-
-    var scenarios;
-    if (dataOption === 'ga-custom') {
-        exportDataGaCustom(configuration).then(visits => {
-            var thinkTimes = null;
-            // Calculates the think times per page instead of per state.
-            if (configuration.exportOptions.thinkTimesPerPage || generateOption === 'probability') { thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers); }
-
-            var visitPaths = createVisitPaths(visits);
-            // Generates the visit graphs with DOT language.
-            if (configuration.exportOptions.writeVisitGraphs) { writeVisitPathGraph(visitPaths); }
-
-            if (generateOption === 'exact') {
-                scenarios = createScenariosExact(visitPaths, thinkTimes, threshold, configuration.exportOptions.removeOutliers);
-            } else if (generateOption === 'probability') {
-                scenarios = createScenariosProbability(visitPaths, thinkTimes, threshold);
-            } else {
-                throw new Error('No option found for generate ' + generateOption);
-            }
-
-            // Writes the graphs of the scenario's.
-            if (configuration.exportOptions.writeScenarioGraphs) { writeScenarioGraph(scenarios); }
-            // Writes the scenario's to XML.
-            if (configuration.exportOptions.xml) { writeScenariosXML(scenarios); }
-            writeScenariosJSON(scenarios);
-        });
-    } else if (dataOption === 'ga') {
-        exportDataGa(configuration).then(visits => {
-            var thinkTimes = getThinkTimesForEachPage(visits, configuration.exportOptions.removeOutliers);
-            scenarios = createScenariosProbability(visits, thinkTimes, threshold);
-
-            // Writes the graphs of the scenario's.
-            if (configuration.exportOptions.writeScenarioGraphs) { writeScenarioGraph(scenarios); }
-            // Writes the scenario's to XML.
-            if (configuration.exportOptions.xml) { writeScenariosXML(scenarios); }
-            writeScenariosJSON(scenarios);
-        });
-    } else {
-        throw new Error('No option found for data ' + dataOption);
-    }
-}
+getScenarios(args.data, args.generate, 1, args.configuration, toGenericPagePath);

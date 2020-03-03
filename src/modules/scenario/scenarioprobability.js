@@ -42,7 +42,7 @@ export function createScenariosProbability (objects, pageThinkTimes, threshold =
         visits.forEach(visit => {
             let previousState = scenarioStates.find(state => state.page === visit.previousPage);
             if (!previousState) {
-                previousState = new ScenarioState(visit.previousPage, [], pageThinkTimes[visit.previousPage], 0);
+                previousState = new ScenarioState(visit.previousPage, [], pageThinkTimes[visit.previousPage], visit.occurences);
                 scenarioStates.push(previousState);
             }
 

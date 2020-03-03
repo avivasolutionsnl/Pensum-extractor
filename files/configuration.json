@@ -1,25 +1,20 @@
 {
   "analytics": {
-    "private_key": "",
-    "client_email": "",
-    "view_id": "",
-    "start_date": "",
-    "end_date": "",
+    "private_key": "privatekey",
+    "client_email": "clientemail",
+    "view_id": "viewid",
+    "start_date": "30daysAgo",
+    "end_date": "today",
     "dimensions": {
-      "userID": "",
-      "loggedIn": "",
-      "date": ""
+      "userID": "ga:dimensionX",
+      "loggedIn": "ga:dimensionX",
+      "date": "ga:dimensionX"
     }
-  },
-  "sitemap": {
-    "productURL": "",
-    "categoriesURL": ""
   },
   "exportOptions": {
     "xml": true,
     "writeVisitGraphs": false,
     "writeScenarioGraphs": false,
-    "useSitemap": true,
     "thinkTimesPerPage": true,
     "removeOutliers": true
   }

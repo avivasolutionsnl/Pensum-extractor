@@ -1,0 +1,20 @@
+strict digraph {
+  entrance
+  "/"
+  "/product"
+  "/category"
+  "/cart"
+  abandon
+  "/checkout"
+  entrance -> "/" [label=" 34% navigate"]
+  entrance -> "/product" [label=" 33% navigate"]
+  entrance -> "/category" [label=" 33% navigate"]
+  "/" -> "/" [label=" 50%:adds-to-cart;"]
+  "/" -> "/cart" [label=" 50% navigate"]
+  "/" -> abandon [label=" 50% navigate"]
+  "/cart" -> "/checkout" [label=" 100% navigate"]
+  "/checkout" -> "/checkout" [label=" 100%:transaction;"]
+  "/checkout" -> abandon [label=" 100% navigate"]
+  "/product" -> abandon [label=" 100% navigate"]
+  "/category" -> "/" [label=" 100% navigate"]
+}

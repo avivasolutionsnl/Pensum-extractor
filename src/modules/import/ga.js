@@ -1,20 +1,25 @@
 import { PageVisit } from '../../models/pagevisit';
 import { Visit } from '../../models/visit';
-import { exportData, cleanPagePath, getCommerceEvents } from '../googleanalytics';
+import { importData, cleanPagePath, getCommerceEvents } from './googleanalytics';
 
 const entranceValue = '(entrance)';
 
 /**
- * Calls the export data function that gets all the visits, the custom getReport() and convertToPageVisit() are passed.
+ * Gets all the page visits
  *
  * @export
  * @param { Object } configuration the configuration that is used for Google Analytics.
+ * @param { Function } toGenericPagePath
+ * @param { Array } GA data elements
  * @returns { PageVisit[] } returns the visits.
  */
 /* istanbul ignore next */
-export async function exportDataGa (configuration) {
-    var visits = await exportData(configuration, getReport, convertToPageVisit);
-    return visits;
+export async function importVisits (configuration, toGenericPagePath, data = null) {
+    if (!data) {
+        data = await importData(configuration, getReport);
+    }
+
+    return data.map(e => convertToPageVisit(e, toGenericPagePath));
 }
 
 /**
@@ -23,23 +28,20 @@ export async function exportDataGa (configuration) {
  * @param { object } element the google analytics row.
  * @returns { PageVisit } the created PageVisit object.
  */
-export function convertToPageVisit (element, products, categories) {
+export function convertToPageVisit (element, toGenericPagePath = (p) => p) {
     // Get all the dimensions out of the element.
-    var pagePath = element.dimensions[0].toLowerCase();
-    var previousPagePath = element.dimensions[1].toLowerCase();
+    element.dimensions.map(s => s.toLowerCase());
+    let [pagePath, previousPagePath] = element.dimensions;
 
     // Get all the metrics out of the element.
-    var occurences = element.metrics[0].values[0];
-    var thinkTime = element.metrics[0].values[1];
-    var entrances = element.metrics[0].values[2];
-    var exit = element.metrics[0].values[3];
-    var addsToCart = element.metrics[0].values[4];
-    var removesFromCart = element.metrics[0].values[5];
-    var transactions = element.metrics[0].values[6];
+    let [occurences, thinkTime, entrances, exit, addsToCart, removesFromCart, transactions] = element.metrics[0].values;
+
+    // Total occurences is minus number of exits
+    occurences -= exit; // TODO: verify if this is correct
 
     // cleaning
-    pagePath = cleanPagePath(pagePath, products, categories);
-    previousPagePath = cleanPagePath(previousPagePath, products, categories);
+    pagePath = toGenericPagePath(cleanPagePath(pagePath));
+    previousPagePath = toGenericPagePath(cleanPagePath(previousPagePath));
     if (previousPagePath === entranceValue) {
         previousPagePath = 'entrance';
     }
@@ -82,8 +84,7 @@ function getReport (analyticsreporting, configuration, pageToken = 0) {
                 ],
                 dimensions: [
                     { name: 'ga:pagepath' },
-                    { name: 'ga:previousPagePath' },
-                    { name: configuration.dimensions.userID }
+                    { name: 'ga:previousPagePath' }
                 ],
                 pageToken: pageToken.toString()
             } ]

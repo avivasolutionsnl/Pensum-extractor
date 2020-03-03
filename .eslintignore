@@ -1,7 +1,11 @@
 /node_modules
 
 /runner/vendor
+/files/
 
+CODEOWNERS
 README.md
+*.dot
 *.json
 *.xsd
+*.xml
