@@ -4,6 +4,7 @@
 /files/
 
 CODEOWNERS
+LICENSE
 README.md
 *.dot
 *.json
