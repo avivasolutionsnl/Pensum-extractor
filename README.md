@@ -1,4 +1,5 @@
-# Pensum Extractor
+# ![Pensum-extractor](./logo.png)
+
 The Pensum-extractor tool distills a load-test scenario out of historical Google Analytics data.
 
 > Pensum-extractor is part of the Pensum toolset which helps you extract, model, and run realistic load-tests.
