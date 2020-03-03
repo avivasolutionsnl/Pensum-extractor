@@ -12,7 +12,7 @@ Using historical data gives you the advantage of creating a realistic load-test.
 
 As historical data quickly grows too large to manually inspect, the only way to extract a test from it is automatically and *that* is where Pensum-extractor comes into play.
 
-The current Pensum-extractor implementation uses Google Analytics (GA) as data source. Although other datasources could in principle be used, 
+The current Pensum-extractor implementation uses Google Analytics (GA) as data source. Although other datasources could be used, 
 GA is considered to be the most widely used website analytics tool and therefore chosen at first.
 
 ## Usage
@@ -24,7 +24,7 @@ Run `extract` with arguments, e.g:
 > npm run extract -- --configuration <configuration.json>
 ```
 
-This will create a JSON file with the scenarios. To make a scenario exectuable, using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner), you will to convert it to a workload model which the runner can handle.
+This will create a JSON file with the scenarios. To make a scenario executable, using [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner), you will need to convert it to a workload model which the runner can handle.
 
 > See [Pensum-runner](https://github.com/avivasolutionsnl/pensum-runner) for the workload model definition
 
@@ -72,7 +72,7 @@ All other options are provided using a configuration file.
 #### Probability strategy
 For generating the scenarios multiple options can be provided. By default Google Analytics (without custom dimensions) and the *probability* method is used. The *probability* method models the likelihood that a certain page is visited. To determine the probability that a user visits another page, it simply divides the number of times a next page is visited by the total outgoing visits. 
 
-The *probability* method does not take previously visited pages into account and thus will this method give one scenario. Not taking the full visit path into account might lead to inaccurate results. In case this concerns you, consider using the (more complex) exact strategy.
+The *probability* method does not take previously visited pages into account which results in always outputting a single scenario. Note that not taking the full visit path into account might lead to inaccurate results. In case this is not accurate enough for your situation, consider using the (more complex) exact strategy.
 
 #### Exact strategy
 The exact method takes the complete path of a visitor into account to calculate the probability of visiting a next page.
