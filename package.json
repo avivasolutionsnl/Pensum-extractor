@@ -29,7 +29,7 @@
     "graphlib": "^2.1.7",
     "graphlib-dot": "^0.6.2",
     "libxmljs": "^0.19.5",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.3",
     "mocha-helpers": "^3.2.0",
     "strip-json-comments": "^3.0.1",
     "xml-writer": "^1.7.0",
