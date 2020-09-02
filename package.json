@@ -25,7 +25,7 @@
     "babel-plugin-istanbul": "^5.1.4",
     "chance": "^1.0.18",
     "del": "^4.1.1",
-    "googleapis": "^37.2.0",
+    "googleapis": "^39.1.0",
     "graphlib": "^2.1.7",
     "graphlib-dot": "^0.6.2",
     "libxmljs": "^0.19.5",
